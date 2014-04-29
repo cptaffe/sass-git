@@ -14,20 +14,32 @@ main(){
 		echo -e "${COL} Sorry, first argument(${RCOL})"
 	else
 		FILE="$1"
-		if [ "$2" == "-m" ]; then
+		if [ "$2" == "-p" ]; then
+			PUSH='YES'
+			if [ "$3" == "-m" ]; then
+				INDEX='4'
+			fi
+		elif [ "$2" == "-m" ]; then
+			INDEX='3'	
+		fi
+		
+		if 
 			INPUT=$*
-			MESSAGE=`echo $INPUT| cut -d' ' -f 3,$#`
+			MESSAGE=`echo $INPUT| cut -d' ' -f $INDEX,$#`
 		else
 			MESSAGE="Updated ${FILE}.scss, ${FILE}.css"
 		fi
+		
 		echo -e "${COL} Compiling ${FILE}.scss > ${FILE}.css..."
 		sass ${FILE}.scss > ${FILE}.css
 		echo -e "${COL} Adding ${FILE}.scss ${FILE}.css..."
 		git add ${FILE}.scss ${FILE}.css
 		echo -e "${COL} Committing \"${MESSAGE}\""
 		git commit -m "$MESSAGE"
-		echo -e "${COL} Pushing..."
-		git push
+		if [ "$PUSH" == "YES" ]; then
+			echo -e "${COL} Pushing..."
+			git push
+		fi
 	fi
 }
 
