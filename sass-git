@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# constants
+NO_ARGS=0
+BLUE="\033[36m"
+RED="\033[31m"
+ENDC="\033[0m"
+COL="${BLUE}#${ENDC}"
+RCOL="${RED}!${ENDC}"
+
+main(){
+	if [ $# -eq "$NO_ARGS" ]
+	then
+		echo -e "${COL} Sorry, first argument(${RCOL})"
+	else
+		FILE="$1"
+		if [ "$2" == "-m" ]; then
+			INPUT=$*
+			MESSAGE=`echo $INPUT| cut -d' ' -f 3,$#`
+		else
+			MESSAGE="Updated ${FILE}.scss, ${FILE}.css"
+		fi
+		echo -e "${COL} Compiling ${FILE}.scss > ${FILE}.css..."
+		sass ${FILE}.scss > ${FILE}.css
+		echo -e "${COL} Adding ${FILE}.scss ${FILE}.css..."
+		git add ${FILE}.scss ${FILE}.css
+		echo -e "${COL} Committing ${MESSAGE}"
+		git commit -m "$MESSAGE"
+		echo -e "${COL} Pushing..."
+		git push
+	fi
+}
+
+main $@	# runs main func
