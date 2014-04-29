@@ -24,7 +24,7 @@ main(){
 		sass ${FILE}.scss > ${FILE}.css
 		echo -e "${COL} Adding ${FILE}.scss ${FILE}.css..."
 		git add ${FILE}.scss ${FILE}.css
-		echo -e "${COL} Committing ${MESSAGE}"
+		echo -e "${COL} Committing \"${MESSAGE}\""
 		git commit -m "$MESSAGE"
 		echo -e "${COL} Pushing..."
 		git push
