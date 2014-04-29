@@ -10,7 +10,7 @@ Shell script for compiling sass, adding files to git, committing with a message,
 Open a terminal and type
 ```sh
 git clone http://github.com/cptaffe/sass-git
-cd sass-git
+cd sass-git/
 cp sass-git /usr/local/bin
 ```
 
