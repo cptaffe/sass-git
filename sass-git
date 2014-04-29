@@ -13,6 +13,7 @@ main(){
 	then
 		echo -e "${COL} Sorry, first argument(${RCOL})"
 	else
+		INDEX='0'
 		FILE="$1"
 		if [ "$2" == "-p" ]; then
 			PUSH='YES'
@@ -23,7 +24,7 @@ main(){
 			INDEX='3'	
 		fi
 		
-		if 
+		if [ "$INDEX" != '0' ]; then
 			INPUT=$*
 			MESSAGE=`echo $INPUT| cut -d' ' -f $INDEX,$#`
 		else
