@@ -32,7 +32,7 @@ $ sass-git 404 -p -m "Updated CSS for 404 page"
 
 ## License
 
-MIT FTW! If you've never seen an MIT license, check out the LICENSE.
+If you've never seen an MIT license, check out the LICENSE.
 
 ## Authors
 
