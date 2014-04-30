@@ -1,9 +1,7 @@
 sass-git
 ========
 
-Shell script for compiling sass, adding files to git, committing with a message, and optionally pushes. Currently errors for whatever stage means that there is no need to do those things (Your repo is up to date). I will specify errors eventually.
-
-
+Golang utility for compiling sass, adding files to git, committing with a message, and optionally pushes. View its [project page](http://cptaffe.github.io/sass-git).
 
 ## Install
 
