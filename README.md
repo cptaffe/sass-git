@@ -11,6 +11,7 @@ Open a terminal and type
 ```sh
 git clone http://github.com/cptaffe/sass-git
 cd sass-git/
+go build sass-git.go
 cp sass-git /usr/local/bin
 ```
 
@@ -25,6 +26,6 @@ To add a custom commit message or push use:
 ```sh
 # optional custom message
 $ sass-git 404 -m "Updated CSS for 404 page"
-# pushing to server (-p must come before -m)
+# pushing to server
 $ sass-git 404 -p -m "Updated CSS for 404 page"
 ```
