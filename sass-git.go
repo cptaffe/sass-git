@@ -94,14 +94,17 @@ func (s *SassGit) CmdExec() error {
 	return nil;
 }
 
+// used to print error messages
 func PrintError(err error){
 	PrintMsg(fmt.Sprintf("Sorry, %s ("+RED+"!"+ENDC+")\n", err))
 }
 
+// used to print normal messages
 func PrintMsg(s string){
 	fmt.Printf(BEGIN+"%s", s)
 }
 
+// used to print messages from executed code
 func PrintExec(b []byte){
 	s := string(b)
 	sub := ""
