@@ -4,12 +4,13 @@ import(
 	"fmt"
 	"os"
 	"os/exec"
-	"log"
+	"errors"
 )
 
 const(
 	// colors (linux)
 	BLUE="\033[36m"
+	//BLUE="\033[38;5;220m" -- 256 colors
 	RED="\033[31m"
 	ENDC="\033[0m"
 	BEGIN=BLUE+"# "+ENDC
@@ -22,10 +23,11 @@ type SassGit struct{
 	push bool
 }
 
-func ParseArgs()(*SassGit){
+// Parses arguments to create struct
+func ParseArgs()(*SassGit, error){
 	s := new(SassGit)
 	if len(os.Args) < 2{
-		fmt.Printf(BEGIN+"Sorry, first argument("+RED+"!"+ENDC+")\n")
+		return s, errors.New("not enough args")
 	} else {
 		for i := 1; i < len(os.Args); i++ {
 			if os.Args[i][0] == '-'{
@@ -42,42 +44,86 @@ func ParseArgs()(*SassGit){
 				s.file = os.Args[i]
 			}
 		}
+		if s.msg == ""{
+			s.msg = fmt.Sprintf("Compiled %[1]s.scss to %[1]s.css", s.file)
+		}
+		return s, nil
 	}
-	return s
 }
 
-func main(){
-	s := ParseArgs()
-	fmt.Printf("%s\n", s);
-	
+func (s *SassGit) CmdExec() error {
 	// sass compile to file
-	fmt.Printf(BEGIN+"Compiling %[1]s.scss %[1]s.css\n", s.file)
+	PrintMsg(fmt.Sprintf("Compiling %[1]s.scss %[1]s.css\n", s.file))
 	cmd := exec.Command("sass", s.file+".scss", s.file+".css")
-	err := cmd.Run()
+	str, err := cmd.Output()
 	if err != nil {
-		log.Fatal(err)
+		return err
+	} else if string(str) != "" {
+		PrintExec(str)
 	}
 	
+	
 	// git add
-	fmt.Printf(BEGIN+"Adding %[1]s.scss %[1]s.css\n", s.file)
-	err = exec.Command("git", "add", s.file+".scss", s.file+".css").Run()
+	PrintMsg(fmt.Sprintf("Adding %[1]s.scss %[1]s.css\n", s.file))
+	str, err = exec.Command("git", "add", s.file+".scss", s.file+".css").Output()
 	if err != nil {
-		log.Fatal(err)
+		return err
+	} else if string(str) != "" {
+		PrintExec(str)
 	}
 	
 	// git commit
-	fmt.Printf(BEGIN+"Committing \"%s\"\n", s.msg)
-	err = exec.Command("git", "commit", "-m", s.msg).Run()
+	PrintMsg(fmt.Sprintf("Committing \"%s\"\n", s.msg))
+	str, err = exec.Command("git", "commit", "-m", s.msg).Output()
 	if err != nil {
-		log.Fatal(err)
+		return err
+	} else if string(str) != "" {
+		PrintExec(str)
 	}
 	
 	if s.push == true {
 		// git push
-		fmt.Printf(BEGIN+"Pushing\n")
-		err = exec.Command("git", "push").Run()
+		PrintMsg("Pushing\n")
+		str, err = exec.Command("git", "push").Output()
 		if err != nil {
-			log.Fatal(err)
+			return err
+		} else if string(str) != "" {
+			PrintExec(str)
+		}
+	}
+	return nil;
+}
+
+func PrintError(err error){
+	PrintMsg(fmt.Sprintf("Sorry, %s ("+RED+"!"+ENDC+")\n", err))
+}
+
+func PrintMsg(s string){
+	fmt.Printf(BEGIN+"%s", s)
+}
+
+func PrintExec(b []byte){
+	s := string(b)
+	sub := ""
+	for i := 0; i < len(s); i++ {
+		if s[i] != '\n'{
+			sub += string(s[i])
+		} else {
+			fmt.Printf(CMDOUT+"%s\n", sub)
+			sub = ""
+		}
+	}
+}
+
+// calls functions
+func main(){
+	s, err := ParseArgs()
+	if err != nil{
+		PrintError(err)
+	}else{
+		err = s.CmdExec()
+		if err != nil{
+			PrintError(err)
 		}
 	}
 }
