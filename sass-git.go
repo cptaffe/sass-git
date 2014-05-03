@@ -1,36 +1,36 @@
 package main
 
-import(
+import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
-	"errors"
 )
 
-const(
+const (
 	// colors (linux)
-	BLUE="\033[36m"
+	BLUE = "\033[36m"
 	//BLUE="\033[38;5;220m" -- 256 colors
-	RED="\033[31m"
-	ENDC="\033[0m"
-	BEGIN=BLUE+"# "+ENDC
-	CMDOUT=RED+"> "+ENDC
+	RED    = "\033[31m"
+	ENDC   = "\033[0m"
+	BEGIN  = BLUE + "# " + ENDC
+	CMDOUT = RED + "> " + ENDC
 )
 
-type SassGit struct{
+type SassGit struct {
 	file string
-	msg string
+	msg  string
 	push bool
 }
 
 // Parses arguments to create struct
-func ParseArgs()(*SassGit, error){
+func ParseArgs() (*SassGit, error) {
 	s := new(SassGit)
-	if len(os.Args) < 2{
+	if len(os.Args) < 2 {
 		return s, errors.New("not enough args")
 	} else {
 		for i := 1; i < len(os.Args); i++ {
-			if os.Args[i][0] == '-'{
+			if os.Args[i][0] == '-' {
 				// flag
 				if os.Args[i] == "-p" {
 					s.push = true
@@ -40,11 +40,11 @@ func ParseArgs()(*SassGit, error){
 					i++
 					s.msg = os.Args[i]
 				}
-			}else {
+			} else {
 				s.file = os.Args[i]
 			}
 		}
-		if s.msg == ""{
+		if s.msg == "" {
 			s.msg = fmt.Sprintf("Compiled %[1]s.scss to %[1]s.css", s.file)
 		}
 		return s, nil
@@ -61,8 +61,7 @@ func (s *SassGit) CmdExec() error {
 	} else if string(str) != "" {
 		PrintExec(str)
 	}
-	
-	
+
 	// git add
 	PrintMsg(fmt.Sprintf("Adding %[1]s.scss %[1]s.css\n", s.file))
 	str, err = exec.Command("git", "add", s.file+".scss", s.file+".css").Output()
@@ -71,7 +70,7 @@ func (s *SassGit) CmdExec() error {
 	} else if string(str) != "" {
 		PrintExec(str)
 	}
-	
+
 	// git commit
 	PrintMsg(fmt.Sprintf("Committing \"%s\"\n", s.msg))
 	str, err = exec.Command("git", "commit", "-m", s.msg).Output()
@@ -80,7 +79,7 @@ func (s *SassGit) CmdExec() error {
 	} else if string(str) != "" {
 		PrintExec(str)
 	}
-	
+
 	if s.push == true {
 		// git push
 		PrintMsg("Pushing\n")
@@ -91,25 +90,25 @@ func (s *SassGit) CmdExec() error {
 			PrintExec(str)
 		}
 	}
-	return nil;
+	return nil
 }
 
 // used to print error messages
-func PrintError(err error){
+func PrintError(err error) {
 	PrintMsg(fmt.Sprintf("Sorry, %s ("+RED+"!"+ENDC+")\n", err))
 }
 
 // used to print normal messages
-func PrintMsg(s string){
+func PrintMsg(s string) {
 	fmt.Printf(BEGIN+"%s", s)
 }
 
 // used to print messages from executed code
-func PrintExec(b []byte){
+func PrintExec(b []byte) {
 	s := string(b)
 	sub := ""
 	for i := 0; i < len(s); i++ {
-		if s[i] != '\n'{
+		if s[i] != '\n' {
 			sub += string(s[i])
 		} else {
 			fmt.Printf(CMDOUT+"%s\n", sub)
@@ -119,13 +118,13 @@ func PrintExec(b []byte){
 }
 
 // calls functions
-func main(){
+func main() {
 	s, err := ParseArgs()
-	if err != nil{
+	if err != nil {
 		PrintError(err)
-	}else{
+	} else {
 		err = s.CmdExec()
-		if err != nil{
+		if err != nil {
 			PrintError(err)
 		}
 	}
