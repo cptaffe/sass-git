@@ -9,8 +9,7 @@ import (
 
 const (
 	// colors (linux)
-	BLUE = "\033[36m"
-	//BLUE="\033[38;5;220m" -- 256 colors
+	BLUE   = "\033[36m"
 	RED    = "\033[31m"
 	ENDC   = "\033[0m"
 	BEGIN  = BLUE + "# " + ENDC
