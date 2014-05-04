@@ -33,8 +33,7 @@ func ParseArgs() (*SassGit, error) {
 				// flag
 				if os.Args[i] == "-p" {
 					s.push = true
-				}
-				if os.Args[i] == "-m" {
+				} else if os.Args[i] == "-m" {
 					// begin quoted string
 					i++
 					s.msg = os.Args[i]
