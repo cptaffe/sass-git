@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -91,11 +92,6 @@ func (s *SassGit) CmdExec() error {
 	return nil
 }
 
-// used to print error messages
-func PrintError(err error) {
-	PrintMsg(fmt.Sprintf("Sorry, %s ("+RED+"!"+ENDC+")\n", err))
-}
-
 // used to print normal messages
 func PrintMsg(s string) {
 	fmt.Printf(BEGIN+"%s", s)
@@ -119,11 +115,11 @@ func PrintExec(b []byte) {
 func main() {
 	s, err := ParseArgs()
 	if err != nil {
-		PrintError(err)
+		log.Fatal(err)
 	} else {
 		err = s.CmdExec()
 		if err != nil {
-			PrintError(err)
+			log.Fatal(err)
 		}
 	}
 }
